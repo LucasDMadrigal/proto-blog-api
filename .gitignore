@@ -11,3 +11,4 @@
 bin/
 obj/
 
+/proto-blog-api/Models/AuthorPublication.cs

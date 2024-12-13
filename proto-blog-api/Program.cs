@@ -1,4 +1,13 @@
+using Microsoft.EntityFrameworkCore;
+using proto_blog_api.Models;
+
 var builder = WebApplication.CreateBuilder(args);
+
+// inyeccion de  context Entity Framework
+builder.Services.AddDbContext<StoreContext>(options =>
+{
+    options.UseSqlServer(builder.Configuration.GetConnectionString("StoreConection"));
+});
 
 // Add services to the container.
 
