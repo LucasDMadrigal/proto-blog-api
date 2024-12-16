@@ -6,7 +6,7 @@
         public string Title { get; set; }
         public string Content { get; set; }
         public Boolean Deleted { get; set; }
-        public ICollection<Author> Authors { get; set; } = new List<Author>(); // Relación M:N con Authors
+        public ICollection<User> Authors { get; set; } = new List<User>(); // Relación M:N con Authors
 
     }
 }

@@ -10,7 +10,6 @@ namespace proto_blog_api.Models
          representamos las entidades en la base de datos
          */
         public DbSet<User> Users { get; set; }
-        public DbSet<Author> Authors { get; set; }
         public DbSet<Publications> Publications { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
