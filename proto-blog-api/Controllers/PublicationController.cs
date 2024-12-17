@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using proto_blog_api.DTOs;
 using proto_blog_api.Models;
+using System.Linq;
 
 namespace proto_blog_api.Controllers
 {
@@ -50,19 +51,37 @@ namespace proto_blog_api.Controllers
             var publication = new Publications();
             publication.Title = publicationInsertDto.Title;
             publication.Content = publicationInsertDto.Content;
-            publication.Deleted = false;
-            
+
+            if (publicationInsertDto.AuthorIds != null && publicationInsertDto.AuthorIds.Any())
+            {
+                var existingUsers = await _context.Users.Where( u =>
+                publicationInsertDto.AuthorIds.Contains(u.Id)).ToListAsync();
+
+                var existingUsersIds = existingUsers.Select(u => u.Id);
+
+                var invalidUsers = publicationInsertDto.AuthorIds.Except(existingUsersIds);
+
+                if (invalidUsers.Any())
+                {
+                    return BadRequest(
+                        new
+                        {
+                            Message = "Algunos Ids no son validos",
+                            invalidAuthors = invalidUsers
+                        });
+                }
+                publication.Authors = existingUsers;
+            }
+
             await _context.Publications.AddAsync(publication);
             await _context.SaveChangesAsync();
 
             var publicationDto = new PublicationDto();
-
-            publicationDto.Id = publication.Id;
             publicationDto.Title = publication.Title;
             publicationDto.Content = publication.Content;
+            publicationDto.Id = publication.Id;
 
-            return CreatedAtAction(nameof(GetById), new {id =  publication.Id}, publicationDto);
-            
+            return CreatedAtAction(nameof(GetById), new { id = publication.Id }, publicationDto);
         }
     }
 }
