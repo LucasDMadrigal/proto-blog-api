@@ -1,7 +1,10 @@
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using proto_blog_api.Models;
+using proto_blog_api.Validator;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,7 +16,8 @@ builder.Services.AddDbContext<StoreContext>(options =>
 });
 
 // Add services to the container
-builder.Services.AddControllers();
+builder.Services.AddControllers(); 
+builder.Services.AddValidatorsFromAssemblyContaining<UserValidator>();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

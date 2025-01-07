@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using proto_blog_api.DTOs;
 using proto_blog_api.Models;
+using proto_blog_api.Utils;
 using System.Linq;
 
 namespace proto_blog_api.Controllers
@@ -19,6 +21,7 @@ namespace proto_blog_api.Controllers
 
 
         [HttpGet]
+        [AllowAnonymous]
         public async Task<IEnumerable<PublicationDto>> Get() => await
             _context.Publications.Select(p => new PublicationDto 
             {  
@@ -28,6 +31,7 @@ namespace proto_blog_api.Controllers
             }).ToListAsync();
 
         [HttpGet("{id:int}")]
+        [AllowAnonymous]
         public async Task<ActionResult<PublicationDto>> GetById(int id)
         {
             var publication = await _context.Publications.FindAsync(id);
@@ -46,6 +50,7 @@ namespace proto_blog_api.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles =nameof(UserRole.Author))]
         public async Task<ActionResult<PublicationDto>> Post(PublicationInsertDto publicationInsertDto)
         {
             var publication = new Publications();
